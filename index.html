@@ -326,34 +326,14 @@
 
       
         
-          
-            <p>##引子<br>偶然看到一篇文章 [NSURLProtocol 拦截 NSURLSession 请求时body丢失问题解决方案探讨]<br>(<a href="https://yq.aliyun.com/articles/543412/?spm=a2c41.11181499.0.0)" target="_blank" rel="noopener">https://yq.aliyun.com/articles/543412/?spm=a2c41.11181499.0.0)</a>.</p>
-<p>疑惑：用NSURLProtocol拦截post请求httpbody真的为空吗？还是需要亲手调试一番。</p>
-<p>###protocol基础<br>参考：<a href="http://nshipster.cn/nsurlprotocol/" target="_blank" rel="noopener">URL加载系统</a></p>
-<p>###开始调试<br>1、创建CustomUrlProtocol 继承自 URLProtocol，重写父类方法</p>
-<pre><code>override public class func canInit(with request: URLRequest) -&gt; Bool {
-    if URLProtocol.property(forKey: &quot;customkey&quot;, in: request) != nil {
-    //自定义key
-        return false
-    }
-    if let url = request.url?.absoluteString, url.contains(&quot;customurl&quot;) {
-    //自定义url
-        return true
-    }
-
-    return false
-}
-</code></pre><p> 2、别忘了 registerClass(CustomUrlProtocol.self)</p>
-<p> 3、一切看起来顺利，断点这个方法后开始运行</p>
-<p> 4、结果： 断点没有起作用。没有走canInit这个方法。</p>
-<p> 5、分析： 网络加载正常，说明请求成功了，即没有正确拦截网络请求。工程用的网络库是AFN 和 Alamofire，这两个库也是基于NSURLSession做请求。</p>
-<p> 6、改正：查查资料</p>
-<blockquote>
-<p>对于基于NSURLSession的网络请求，需要通过配置NSURLSessionConfiguration对象的protocolClasses属性。</p>
-</blockquote>
-<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>request.HttpBody确实为空</p>
-
-          
+          <p>用NSURLProtocol拦截post请求httpbody真的为空吗？还是需要亲手调试一番。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/04/09/NSURLProtocol使用疑惑/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>

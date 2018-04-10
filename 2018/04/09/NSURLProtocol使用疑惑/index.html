@@ -86,18 +86,18 @@
 
 
 
-<meta name="description" content="##引子偶然看到一篇文章 [NSURLProtocol 拦截 NSURLSession 请求时body丢失问题解决方案探讨](https://yq.aliyun.com/articles/543412/?spm=a2c41.11181499.0.0). 疑惑：用NSURLProtocol拦截post请求httpbody真的为空吗？还是需要亲手调试一番。 ###protocol基础参考：URL加载系">
+<meta name="description" content="用NSURLProtocol拦截post请求httpbody真的为空吗？还是需要亲手调试一番。">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="NSURLProtocol使用疑惑">
 <meta property="og:url" content="http://yoursite.com/2018/04/09/NSURLProtocol使用疑惑/index.html">
 <meta property="og:site_name" content="Sugoi&#39;s Blog">
-<meta property="og:description" content="##引子偶然看到一篇文章 [NSURLProtocol 拦截 NSURLSession 请求时body丢失问题解决方案探讨](https://yq.aliyun.com/articles/543412/?spm=a2c41.11181499.0.0). 疑惑：用NSURLProtocol拦截post请求httpbody真的为空吗？还是需要亲手调试一番。 ###protocol基础参考：URL加载系">
+<meta property="og:description" content="用NSURLProtocol拦截post请求httpbody真的为空吗？还是需要亲手调试一番。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-09T08:16:52.000Z">
+<meta property="og:updated_time" content="2018-04-10T10:04:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="NSURLProtocol使用疑惑">
-<meta name="twitter:description" content="##引子偶然看到一篇文章 [NSURLProtocol 拦截 NSURLSession 请求时body丢失问题解决方案探讨](https://yq.aliyun.com/articles/543412/?spm=a2c41.11181499.0.0). 疑惑：用NSURLProtocol拦截post请求httpbody真的为空吗？还是需要亲手调试一番。 ###protocol基础参考：URL加载系">
+<meta name="twitter:description" content="用NSURLProtocol拦截post请求httpbody真的为空吗？还是需要亲手调试一番。">
 
 
 
@@ -337,10 +337,12 @@
       
 
       
-        <p>##引子<br>偶然看到一篇文章 [NSURLProtocol 拦截 NSURLSession 请求时body丢失问题解决方案探讨]<br>(<a href="https://yq.aliyun.com/articles/543412/?spm=a2c41.11181499.0.0)" target="_blank" rel="noopener">https://yq.aliyun.com/articles/543412/?spm=a2c41.11181499.0.0)</a>.</p>
+        <p>用NSURLProtocol拦截post请求httpbody真的为空吗？还是需要亲手调试一番。</p>
+<a id="more"></a>
+<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>偶然看到一篇文章 <a href="https://yq.aliyun.com/articles/543412/?spm=a2c41.11181499.0.0" target="_blank" rel="noopener">NSURLProtocol 拦截 NSURLSession 请求时body丢失问题解决方案探讨</a></p>
 <p>疑惑：用NSURLProtocol拦截post请求httpbody真的为空吗？还是需要亲手调试一番。</p>
-<p>###protocol基础<br>参考：<a href="http://nshipster.cn/nsurlprotocol/" target="_blank" rel="noopener">URL加载系统</a></p>
-<p>###开始调试<br>1、创建CustomUrlProtocol 继承自 URLProtocol，重写父类方法</p>
+<h3 id="protocol基础"><a href="#protocol基础" class="headerlink" title="protocol基础"></a>protocol基础</h3><p>参考：<a href="http://nshipster.cn/nsurlprotocol/" target="_blank" rel="noopener">URL加载系统</a></p>
+<h3 id="开始调试"><a href="#开始调试" class="headerlink" title="开始调试"></a>开始调试</h3><p>1、创建CustomUrlProtocol 继承自 URLProtocol，重写父类方法</p>
 <pre><code>override public class func canInit(with request: URLRequest) -&gt; Bool {
     if URLProtocol.property(forKey: &quot;customkey&quot;, in: request) != nil {
     //自定义key
@@ -535,7 +537,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#结论"><span class="nav-number">1.</span> <span class="nav-text">结论</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引子"><span class="nav-number">1.</span> <span class="nav-text">引子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#protocol基础"><span class="nav-number">1.1.</span> <span class="nav-text">protocol基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始调试"><span class="nav-number">1.2.</span> <span class="nav-text">开始调试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结论"><span class="nav-number">1.3.</span> <span class="nav-text">结论</span></a></li></ol></li></ol></div>
             
 
           </div>
