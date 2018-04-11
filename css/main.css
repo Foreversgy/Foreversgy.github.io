@@ -1252,6 +1252,10 @@ pre .javascript .function {
   -o-transform: rotate(30deg);
   transform: rotate(30deg);
 }
+.post-body a {
+  color: #428bca;
+  font-weight: bold;
+}
 .use-motion .post-block,
 .use-motion .pagination,
 .use-motion .comments {
@@ -1832,7 +1836,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #adffff;
+  background: #ff75cf;
 }
 .links-of-blogroll {
   font-size: 13px;
