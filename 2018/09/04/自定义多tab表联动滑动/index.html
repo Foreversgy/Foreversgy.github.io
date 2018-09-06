@@ -94,7 +94,7 @@
 <meta property="og:site_name" content="Sugoi&#39;s Blog">
 <meta property="og:description" content="用UICollectionView实现多表联调滑动。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-06T06:04:53.615Z">
+<meta property="og:updated_time" content="2018-09-06T10:42:35.632Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="自定义多tab表联动滑动">
 <meta name="twitter:description" content="用UICollectionView实现多表联调滑动。">
@@ -343,15 +343,38 @@
 <p>先看实现效果。</p>
 <h3 id="方案一"><a href="#方案一" class="headerlink" title="方案一"></a>方案一</h3><p>实现多表滑动的时候，首先想到的是用系统的UIPageViewController，可以方便的为我们管理controller的生命周期。但这个类已被高度封装，无法获取内部scrollview的属性和scroll的偏移值（也可以获取，就是有点麻烦），同时子controller出现的时机也难以把握。更重要的是 有一些坑，比如快速滑动 与 快速点击的时候，有时候会崩溃。所以这个方案不可行。</p>
 <h3 id="方案二"><a href="#方案二" class="headerlink" title="方案二"></a>方案二</h3><p>使用UICollectionView，可以获取子view的滑动值，但必须自己控制生命周期。即封装成一个UIPagecontroller。故采用这种方案。</p>
-<h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><p>1、用UICollectionView实现左右滑动，设置cell的大小为当前屏幕的大小，这样每切换滑动一次可以切换一个cell，即itemSize = self.view.size</p>
-<p>2、为了将多个子列表解耦，必须为每个列表单独创建一个VC。通过addChildController、removeController的方式，显示VC对应的View。<br>这个有两个坑</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>1、用UICollectionView实现左右滑动，设置cell的大小为当前屏幕的大小，这样每切换滑动一次可以切换一个cell，即</p>
+<pre><code>itemSize = self.view.size
+</code></pre><p>2、为了将多个子列表解耦，必须为每个列表单独创建一个VC。通过addChildController、removeController的方式，显示VC对应的View。<br>这个有两个坑</p>
 <pre><code>1、复用UICollectionViewCell的时候 需要清除之前的VC 和 VIew。对应的VC可以通过nextreponder 的方式寻找。
 
 2、当UICollectionView滑动停止的时候，需要清除当前不在显示区域的VC 和 view。保证只有一个VC和对应的view显示。
-</code></pre><p>3、为了显示顶部的菜单栏TopView，并且不跟随UICollectionView左右滑动，故设置跟UICollectionView同级。</p>
-<p>4、TopView会盖住子列表的部分内容，所以还需要设置子列表的contentInset.top = TopView.frame.height</p>
+</code></pre><p>3、为了显示顶部的悬浮菜单栏TopView，并且不跟随UICollectionView左右滑动，故设置跟UICollectionView同级。</p>
+<p>4、TopView会盖住子列表的部分内容，还需要设置子列表的contentInset.top = TopView.frame.height</p>
 <p>完成以上四步，框架基本搭建完成，下面将逐一解决遇到的问题。</p>
-<h4 id="参考-："><a href="#参考-：" class="headerlink" title="参考 ####："></a>参考 ####：</h4><p><a href="https://github.com/yongyuandouneng/YNPageViewController" target="_blank" rel="noopener">YNPageViewController</a></p>
+<p>###问题###</p>
+<label style="color:blue">1、拖动悬浮栏TopView时，如果让子列表跟随滑动？</label>    
+
+<p>可以在TopView上添加一个监听上下滑动的UIPanGesture手势。TopView有可能会展示左右滑动的banner，所以在触发手势的时候，需要判断是否是上下滑动手势。如果是则联动子列表一起滑动</p>
+<pre><code>    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -&gt; Bool {
+        if gestureRecognizer == self.panGesutre {
+               let point = self.panGesutre.translation(in: self)
+              if abs(point.y) &gt; abs(point.x) {
+                    return true
+                 }
+       return false
+        }
+    return true
+}
+</code></pre><label style="color:blue">2、使用MJRefresh header 导致第一次显示界面时，可能引起其他子列表下滑？</label>
+
+<p>通常情况下在我们会在viewdidload调用 mjheader.beginRefresh()。该方法会使得当前列表偏移 cotentInset.top + 刷新控件.height。并产生下拉动画。该动画会联动TopView一起滑动。，如果第一次显示页面时，不是在原先设定的初始位置，此动画有可能导致TopView无法固定悬浮。目前也只能暂时规避，不调用mj_header.beginRefresh（）,自定义刷新。</p>
+<label style="color:blue">3、子列表reloadData后,设置contentOffset无效?</label>
+
+<pre><code>    reloadData()
+    tableView.layoutIfNeeded() //进行强制刷新
+</code></pre><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p><a href="https://github.com/foreversgy/MultiTabDemo" target="_blank" rel="noopener">github下载</a></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://github.com/yongyuandouneng/YNPageViewController" target="_blank" rel="noopener">YNPageViewController</a></p>
 
       
     </div>
@@ -525,7 +548,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案一"><span class="nav-number">1.1.</span> <span class="nav-text">方案一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案二"><span class="nav-number">1.2.</span> <span class="nav-text">方案二</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#实现"><span class="nav-number">1.2.1.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考-："><span class="nav-number">1.2.2.</span> <span class="nav-text">参考 ####：</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案一"><span class="nav-number">1.1.</span> <span class="nav-text">方案一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案二"><span class="nav-number">1.2.</span> <span class="nav-text">方案二</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现"><span class="nav-number">1.3.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码"><span class="nav-number">1.4.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">1.5.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
             
 
           </div>
