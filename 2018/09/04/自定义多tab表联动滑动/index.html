@@ -94,7 +94,7 @@
 <meta property="og:site_name" content="Sugoi&#39;s Blog">
 <meta property="og:description" content="用UICollectionView实现多表联调滑动。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-06T10:42:35.632Z">
+<meta property="og:updated_time" content="2018-09-19T12:19:48.967Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="自定义多tab表联动滑动">
 <meta name="twitter:description" content="用UICollectionView实现多表联调滑动。">
@@ -357,14 +357,14 @@
 <label style="color:blue">1、拖动悬浮栏TopView时，如果让子列表跟随滑动？</label>    
 
 <p>可以在TopView上添加一个监听上下滑动的UIPanGesture手势。TopView有可能会展示左右滑动的banner，所以在触发手势的时候，需要判断是否是上下滑动手势。如果是则联动子列表一起滑动</p>
-<pre><code>    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -&gt; Bool {
-        if gestureRecognizer == self.panGesutre {
-               let point = self.panGesutre.translation(in: self)
-              if abs(point.y) &gt; abs(point.x) {
-                    return true
-                 }
-       return false
+<pre><code>override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -&gt; Bool {
+    if gestureRecognizer == self.panGesutre {
+        let point = self.panGesutre.translation(in: self)
+        if abs(point.y) &gt; abs(point.x) {
+            return true
         }
+        return false
+    }
     return true
 }
 </code></pre><label style="color:blue">2、使用MJRefresh header 导致第一次显示界面时，可能引起其他子列表下滑？</label>
@@ -415,6 +415,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/19/如何自定义密码框/" rel="prev" title="如何自定义密码框">
+                如何自定义密码框 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -503,7 +507,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
