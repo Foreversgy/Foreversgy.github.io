@@ -327,57 +327,14 @@
 
       
         
-          
-            <h2 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h2><p>网上大致搜索了一下，绘制密码框大概有两种方案:</p>
-<p>1、使用UITextView, 每个数字对应一个view。</p>
-<p>2、    使用UIKeyInput, 利用coretext绘制文本。</p>
-<p>本文使用第二种方案。</p>
-<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>一、关于UIKeyInput</p>
-<pre><code>@protocol UIKeyInput &lt;UITextInputTraits&gt;
-
-@property(nonatomic, readonly) BOOL hasText;
-- (BOOL)hasText;
-- (void)insertText:(NSString *)text;
-- (void)deleteBackward;
-
-- @end
-</code></pre><p>二、遵循UIKeyInput协议 并且实现协议里面的方法。</p>
-<p>1、当监听到键盘输入时，系统回调 insertText：方法。则可以获取到输入的文本信息。同理,当删除某文本时，系统回调 deleteBackward。</p>
-<p>三、绘制文本，密码框其实有数字 和 下划线组成</p>
-<p>1、使用CGContextRef 绘制下划线，如：</p>
-<pre><code>     guard let ctx = UIGraphicsGetCurrentContext() else {return}
-
-    ctx.setLineWidth(1)
-    //开始画底部的线
-
-    Array(1...maxLength).forEach { (index) in
-        ctx.move(to: CGPoint(x: 0, y: 0))
-        ctx.addLine(to: CGPoint(x: 20, y: 20))
-        ctx.strokePath()
-    }
-</code></pre><p> 2、使用coretext 绘制文本，如：</p>
-<pre><code> text.forEach { (t) in
-        let str = isEncrypt ? &quot;*&quot; : String(t)
-        let attriStr = NSAttributedString(string: str, attributes:
-            [NSAttributedStringKey.font: textFont,
-             NSAttributedStringKey.foregroundColor: textColor])
-        let frameSetter =
-            CTFramesetterCreateWithAttributedString(attriStr)
-
-        var frameSize = CTFramesetterSuggestFrameSizeWithConstraints(frameSetter, CFRangeMake(0, 1), nil, CGSize(width: width, height: rect.height), nil)
-        frameSize.width = ceil(frameSize.width)
-        frameSize.height = ceil(frameSize.height)
-
-        let offsetX = (width + space) * CGFloat(index - 1)
-        let path = UIBezierPath(rect: CGRect(x: offsetX + (width - frameSize.width)/2, y: (rect.height - frameSize.height)/2, width: frameSize.width, height: frameSize.height)).cgPath
-        let frame = CTFramesetterCreateFrame(frameSetter, CFRangeMake(0, 1), path, nil)
-        CTFrameDraw(frame, ctx)
-        index = index + 1
-    }
-}
-</code></pre><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p><a href="https://github.com/foreversgy/PasswordDemo.git" target="_blank" rel="noopener">github下载</a></p>
-
-          
+          <p>快速简单的实现密码框UI，并自定义UI</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/19/如何自定义密码框/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
