@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="iOS," />
 
 
 
@@ -86,14 +86,18 @@
 
 
 
+<meta name="description" content="方案网上大致搜索了一下，绘制密码框大概有两种方案: 1、使用UITextView, 每个数字对应一个view。 2、    使用UIKeyInput, 利用coretext绘制文本。 本文使用第二种方案。 实现一、关于UIKeyInput @protocol UIKeyInput &amp;lt;UITextInputTraits&amp;gt;  @property(nonatomic, readonly) B">
+<meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何自定义密码框">
 <meta property="og:url" content="http://yoursite.com/2018/09/19/如何自定义密码框/index.html">
 <meta property="og:site_name" content="Sugoi&#39;s Blog">
+<meta property="og:description" content="方案网上大致搜索了一下，绘制密码框大概有两种方案: 1、使用UITextView, 每个数字对应一个view。 2、    使用UIKeyInput, 利用coretext绘制文本。 本文使用第二种方案。 实现一、关于UIKeyInput @protocol UIKeyInput &amp;lt;UITextInputTraits&amp;gt;  @property(nonatomic, readonly) B">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-19T12:20:43.770Z">
+<meta property="og:updated_time" content="2018-11-08T14:06:31.307Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何自定义密码框">
+<meta name="twitter:description" content="方案网上大致搜索了一下，绘制密码框大概有两种方案: 1、使用UITextView, 每个数字对应一个view。 2、    使用UIKeyInput, 利用coretext绘制文本。 本文使用第二种方案。 实现一、关于UIKeyInput @protocol UIKeyInput &amp;lt;UITextInputTraits&amp;gt;  @property(nonatomic, readonly) B">
 
 
 
@@ -334,7 +338,55 @@
       
 
       
-        
+        <h2 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h2><p>网上大致搜索了一下，绘制密码框大概有两种方案:</p>
+<p>1、使用UITextView, 每个数字对应一个view。</p>
+<p>2、    使用UIKeyInput, 利用coretext绘制文本。</p>
+<p>本文使用第二种方案。</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>一、关于UIKeyInput</p>
+<pre><code>@protocol UIKeyInput &lt;UITextInputTraits&gt;
+
+@property(nonatomic, readonly) BOOL hasText;
+- (BOOL)hasText;
+- (void)insertText:(NSString *)text;
+- (void)deleteBackward;
+
+- @end
+</code></pre><p>二、遵循UIKeyInput协议 并且实现协议里面的方法。</p>
+<p>1、当监听到键盘输入时，系统回调 insertText：方法。则可以获取到输入的文本信息。同理,当删除某文本时，系统回调 deleteBackward。</p>
+<p>三、绘制文本，密码框其实有数字 和 下划线组成</p>
+<p>1、使用CGContextRef 绘制下划线，如：</p>
+<pre><code>     guard let ctx = UIGraphicsGetCurrentContext() else {return}
+
+    ctx.setLineWidth(1)
+    //开始画底部的线
+
+    Array(1...maxLength).forEach { (index) in
+        ctx.move(to: CGPoint(x: 0, y: 0))
+        ctx.addLine(to: CGPoint(x: 20, y: 20))
+        ctx.strokePath()
+    }
+</code></pre><p> 2、使用coretext 绘制文本，如：</p>
+<pre><code> text.forEach { (t) in
+        let str = isEncrypt ? &quot;*&quot; : String(t)
+        let attriStr = NSAttributedString(string: str, attributes:
+            [NSAttributedStringKey.font: textFont,
+             NSAttributedStringKey.foregroundColor: textColor])
+        let frameSetter =
+            CTFramesetterCreateWithAttributedString(attriStr)
+
+        var frameSize = CTFramesetterSuggestFrameSizeWithConstraints(frameSetter, CFRangeMake(0, 1), nil, CGSize(width: width, height: rect.height), nil)
+        frameSize.width = ceil(frameSize.width)
+        frameSize.height = ceil(frameSize.height)
+
+        let offsetX = (width + space) * CGFloat(index - 1)
+        let path = UIBezierPath(rect: CGRect(x: offsetX + (width - frameSize.width)/2, y: (rect.height - frameSize.height)/2, width: frameSize.width, height: frameSize.height)).cgPath
+        let frame = CTFramesetterCreateFrame(frameSetter, CFRangeMake(0, 1), path, nil)
+        CTFrameDraw(frame, ctx)
+        index = index + 1
+    }
+}
+</code></pre><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p><a href="https://github.com/foreversgy/PasswordDemo.git" target="_blank" rel="noopener">github下载</a></p>
+
       
     </div>
     
@@ -348,6 +400,12 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"><i class="fa fa-tag"></i> iOS</a>
+          
+        </div>
       
 
       
@@ -426,8 +484,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -482,6 +549,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#方案"><span class="nav-number">1.</span> <span class="nav-text">方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实现"><span class="nav-number">1.1.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码"><span class="nav-number">1.2.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
